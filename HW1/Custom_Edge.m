@@ -5,6 +5,9 @@ close
 files = dir('*.jpg');
 
 for file = files'
+    if(strfind(file.name, 'sol'))
+        continue;
+    end
     pic = imread(file.name, 'jpg');
     pic_gray = rgb2gray(pic);
     % STEP 1
@@ -29,8 +32,8 @@ for file = files'
     mark = zeros(size(pic_conv));
     edge = zeros(size(pic_conv));
     [m, n] = size (pic_conv);
-    startline_thresh = 10;
-    stopline_thresh = 2;
+    startline_thresh = 8;
+    stopline_thresh = 1;
 
     for i = 2: m-1
         for j = 2 : n-1

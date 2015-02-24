@@ -4,8 +4,12 @@ close
 files = dir('*.jpg');
 
 for file = files'
-    pic = imread(file.name, 'jpg');
-    pic_gray = rgb2gray(pic);
-    figure()
-    imshow(edge(pic_gray,'canny', .4, 1))
+    if(strfind(file.name, 'sol'))
+        file.name
+    else
+        pic = imread(file.name, 'jpg');
+        pic_gray = rgb2gray(pic);
+        figure()
+        imshow(edge(pic_gray,'canny'))
+    end
 end
