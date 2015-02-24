@@ -1,7 +1,11 @@
 clc
 clear
 close
-pic = imread('pic1.jpg', 'jpg');
-pic_gray = rgb2gray(pic);
-%imshow(pic_gray)
-imshow(edge(pic_gray,'canny', .4, 1))
+files = dir('*.jpg');
+
+for file = files'
+    pic = imread(file.name, 'jpg');
+    pic_gray = rgb2gray(pic);
+    figure()
+    imshow(edge(pic_gray,'canny', .4, 1))
+end

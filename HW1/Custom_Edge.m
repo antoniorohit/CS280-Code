@@ -53,51 +53,7 @@ for file = files'
                         while n0 > stopline_thresh && i_temp < m-1 && j_temp < n-1 && mark(i_temp, j_temp) ~= 1
                             if n0 > n1 || n0 > n2 || n0 > n3 || n0 > n4 || n0 > n5 || n0 > n6 || n0 > n7 || n0 > n8
                                 count = count + 1;
-
-        %                         ang = theta(i_temp,j_temp);
-        %                         % non max supression
-        %                         if((ang < -(180-22.5)) || (ang > (180-22.5)))
-        %                             id = 0;
-        %                             jd = -1;
-        %                         else if(ang < -(90+22.5))
-        %                                 id  = 1;
-        %                                 jd = -1;
-        %                             else if(ang < -(90-22.5))
-        %                                     id = 1;
-        %                                     jd = 0;
-        %                                 else if(ang < -22.5)
-        %                                         id = 1;
-        %                                         jd = 1;
-        %                                     else if(ang > 90+22.5)
-        %                                             id = -1;
-        %                                             jd = -1;
-        %                                         else if(ang > 90-22.5)
-        %                                                 id = -1;
-        %                                                 jd = 0;
-        %                                             else if(ang > 22.5)
-        %                                                     id = -1;
-        %                                                     jd = 1;
-        %                                                 else
-        %                                                     id = 0;
-        %                                                     jd = 1;
-        %                                                 end
-        %                                             end
-        %                                         end
-        %                                     end
-        %                                 end
-        %                             end
-        %                         end
-        %                         if(Im(i_temp, j_temp) >= Im(i_temp + id, j_temp + jd)) && (Im(i_temp, j_temp) >= Im(i_temp - id, j_temp - jd))
-        %                             i_temp = i_temp;
-        %                             j_temp = j_temp;
-        %                         else if(Im(i_temp + id, j_temp + jd) > Im(i_temp, j_temp)) && (Im(i_temp + id, j_temp + jd) > Im(i_temp - id, j_temp - jd))
-        %                             i_temp = i_temp + id;
-        %                             j_temp = j_temp + jd;
-        %                             else
-        %                                 i_temp = i_temp - id;
-        %                                 j_temp = j_temp - jd;
-        %                             end
-        %                         end
+                                
                                 mark(i_temp, j_temp) = 1;
                                 edge(i_temp, j_temp) = 255;
                                 ang = theta(i_temp,j_temp);
@@ -152,12 +108,13 @@ for file = files'
                                     break;
                                 end
                             else
+                                mark(i_temp, j_temp) = 1;
                                 break;
                             end
                         end
                             % Remove stray dots
                             if(count <= 1)
-                                edge(i,j) = 1;
+                                edge(i,j) = 0;
                             end
                     end
                 else
