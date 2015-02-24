@@ -5,7 +5,7 @@ close
 files = dir('*.jpg');
 
 for file = files'
-    if(strfind(file.name, 'sol'))
+    if(~isempty(strfind(file.name, 'sol')) || ~isempty(strfind(file.name, 'Optical_Flow')))
         continue;
     end
     pic = imread(file.name, 'jpg');
@@ -98,14 +98,6 @@ for file = files'
                             % magnitude of the next pixel gradient
                             if(i_temp ~= 1 && j_temp ~= 1)
                                 n0 = Im(i_temp, j_temp);
-                                n1 = Im(i_temp-1, j_temp-1);
-                                n2 = Im(i_temp-1, j_temp  );
-                                n3 = Im(i_temp-1, j_temp+1);
-                                n4 = Im(i_temp  , j_temp-1);
-                                n5 = Im(i_temp  , j_temp+1);
-                                n6 = Im(i_temp+1, j_temp-1);
-                                n7 = Im(i_temp+1, j_temp  );
-                                n8 = Im(i_temp+1, j_temp+1);
                             else
                                 break;
                             end
