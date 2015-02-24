@@ -122,6 +122,7 @@ for file = files'
     
     figure();
     imshow(edge);
-    savefig(strcat(strrep(file.name, '.jpg',''), '_sol'));
-    
+    saveas(imshow(edge), strcat(strrep(file.name, '.jpg',''), '_sol.jpg'));
 end
+
+
