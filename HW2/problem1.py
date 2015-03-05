@@ -90,7 +90,20 @@ imageComplete = zip(imageData, imageLabels)
 # SHUFFLE THE IMAGES
 random.shuffle(imageComplete)
 
-for MALIK in [0, 2, 1]:
+def blockshaped(arr, nrows, ncols):
+    """
+    Return an array of shape (n, nrows, ncols) where
+    n * nrows * ncols = arr.size
+
+    If arr is a 2D array, the returned array should look like n subblocks with
+    each subblock preserving the "physical" layout of arr.
+    """
+    h, w = arr.shape
+    return (arr.reshape(h//nrows, nrows, -1, ncols)
+               .swapaxes(1,2)
+               .reshape(-1, nrows, ncols))
+    
+for MALIK in [0]:#, 2, 1]:
     print "Feature Iteration:", MALIK
     
     # Arrays to hold the shuffled data and labels
@@ -121,19 +134,33 @@ for MALIK in [0, 2, 1]:
             ori_4_hist = []
             ori_7_hist = []
             
-            for i in np.linspace(0, 28, num=15):
-                for j in np.linspace(0, 28, num=15):
-                    if(i%2 == 0 and j%2 == 0 and i<=28-4 and j<=28-4):
-                        ori_4 = ori[i:i+4, j:j+4].flatten()
-#                         print np.shape(ori_4), i, j
-                        ori_4_hist.append(np.histogram(ori_4, 10, (-np.pi, np.pi))[0])
+#             
+            ori_4_1 = blockshaped(ori, 4, 4)
+            ori_4_2 = blockshaped(ori[2:-2, 2:-2], 4, 4)
+            for (elem1, elem2) in zip(ori_4_1, ori_4_2):
+                ori_4_hist.append(np.histogram(elem1.flatten(), 9, (-np.pi, np.pi))[0])
+                ori_4_hist.append(np.histogram(elem2.flatten(), 9, (-np.pi, np.pi))[0])
+ 
+            ori_7_1 = (blockshaped(ori, 7, 7))
+            ori_7_2 = (blockshaped(ori[3:-4, 3:-4], 7, 7))
+            for elem1, elem2 in zip(ori_7_1, ori_7_2):
+                ori_4_hist.append(np.histogram(elem1.flatten(), 9, (-np.pi, np.pi))[0])
+                ori_4_hist.append(np.histogram(elem2.flatten(), 9, (-np.pi, np.pi))[0])
 
-            for i in np.linspace(0, 28, num=8):
-                for j in np.linspace(0, 28, num=8):
-                    if(i%4 == 0 and j%4 == 0 and i<=28-7 and j<=28-7):
-                        ori_7 = ori[i:i+7, j:j+7].flatten()
-#                         print np.shape(ori_7), i, j
-                        ori_7_hist.append(np.histogram(ori_7, 10, (-np.pi, np.pi))[0])
+#              
+#             for i in np.linspace(0, 28, num=15):
+#                 for j in np.linspace(0, 28, num=15):
+#                     if(i%2 == 0 and j%2 == 0 and i<=28-4 and j<=28-4):
+#                         ori_4 = ori[i:i+4, j:j+4].flatten()
+# #                         print np.shape(ori_4), i, j
+#                         ori_4_hist.append(np.histogram(ori_4, 10, (-np.pi, np.pi))[0])
+#   
+#             for i in np.linspace(0, 28, num=8):
+#                 for j in np.linspace(0, 28, num=8):
+#                     if(i%4 == 0 and j%4 == 0 and i<=28-7 and j<=28-7):
+#                         ori_7 = ori[i:i+7, j:j+7].flatten()
+# #                         print np.shape(ori_7), i, j
+#                         ori_7_hist.append(np.histogram(ori_7, 10, (-np.pi, np.pi))[0])
                         
             
             ori_4_hist = np.float64(ori_4_hist)/(np.linalg.norm(ori_4_hist))
