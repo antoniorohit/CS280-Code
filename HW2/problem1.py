@@ -3,9 +3,8 @@
 # choices of the number of training examples should be 100, 200, 500, 1,000, 2,000, 5,000
 # and 10,000. Make sure you set aside 10,000 other training points as a validation set.
 # You should expect accuracies between 70% and 90% at this stage
-from dynd._pydynd import linspace
-import matplotlib.cm as cm
 
+# global bins 
 
 ###################################
 # Function to calculate cross validation scores 
@@ -35,8 +34,7 @@ def computeCV_Score(clf, data, labels, folds):
                         accuracy+=1
                     else:
                         pass
-                        plt.imshow(data[i])
-                        plt.show()
+
                 
             j+=1
         scores.append(100.0*accuracy/((folds-1)*len(predicted_Digits)))
@@ -45,15 +43,11 @@ def computeCV_Score(clf, data, labels, folds):
 ###################################
 
 ############# IMPORTS ############# 
-
-import scipy as sp
 from scipy import signal
 import numpy as np
 from sklearn import svm
 from scipy import io
 import random
-from skimage.io._plugins.qt_plugin import ImageLabel
-from sklearn.metrics import confusion_matrix
 import pylab as plt
 from sklearn import cross_validation
 
@@ -80,81 +74,100 @@ imageData = np.array(trainMatrix['train_images'])
 imageData = np.rollaxis(imageData, 2, 0)                # move the index axis to be the first 
 imageLabels = np.array(trainMatrix['train_labels'])
 
-for MALIK in [True, False]:
-    ############# 
-    # Ink Normalization
-    ############# 
-    if MALIK == True:
-        i = 0
-        #TODO change for loop
-        for element in imageData:
-            if np.linalg.norm(imageData[i]) != 0:
-                imageData[i] = (imageData[i]/np.linalg.norm(imageData[i]))
-            i+=1
-    else:
-        pass
-    
-    imageComplete = zip(imageData, imageLabels)
-    
-    if DEBUG:
-        print 50*'-'
-        print ("Shapes of image data and labels: ", imageData.shape, 
-                                        imageLabels.shape, len(imageComplete))
-        
-        print "Image/Digit 10000:\n", imageComplete[20000]
-        
-    ############# SET ASIDE VALIDATION DATA (10,000) ############# 
-    # SHUFFLE THE IMAGES
-    random.shuffle(imageComplete)
+############# 
+# Ink Normalization
+############# 
+i = 0
+#TODO change for loop
+for element in imageData:
+    if np.linalg.norm(imageData[i]) != 0:
+        imageData[i] = (imageData[i]/np.linalg.norm(imageData[i]))
+    i+=1
+
+imageComplete = zip(imageData, imageLabels)
+
+############# SET ASIDE VALIDATION DATA (10,000) ############# 
+# SHUFFLE THE IMAGES
+random.shuffle(imageComplete)
+
+for MALIK in [0, 2, 1]:
+    print "Feature Iteration:", MALIK
     
     # Arrays to hold the shuffled data and labels
     shuffledData = []
     shuffledLabels = []
     
-    if MALIK == True:
-        ############# 
-        # ORIENTATION HISTOGRAM
-        ############# 
-        bins = np.linspace(-np.pi, np.pi, 10)       # num bins should be 8-10
-        for elem in imageComplete:
-            grad_filter = [-1, 0, 1]
-    #         gradx = np.convolve(elem[0], grad_filter, 'same')
-    #         grady = np.convolve(elem[0], np.transpose(grad_filter), 'same')
-            [gradx, grady] = np.gradient(elem[0])
-            
+    index = 0
     
+    if MALIK == 0:      # Orientation histogram + magnitude of gradient
+        for elem in imageComplete:
+            if index%100 == 0:
+                print index
+            index +=1
+            grad_filter = np.array([[-1, 0, 1]])
+            gradx = signal.convolve2d(elem[0], grad_filter, 'same')
+            grady = signal.convolve2d(elem[0], np.transpose(grad_filter), 'same')
+            
+            ori = np.array(np.arctan2(grady, gradx))
             mag = np.sqrt(np.square(gradx) + np.square(grady))
-            cell_size = 4
-            cell = (1.0/cell_size**2)*np.ones((cell_size,cell_size))
             
-            ori = (np.arctan2(grady, gradx))
-            # Aggregate over a cell 4x4 etc moved by half cell size
-    #         ori = signal.convolve2d(ori, cell, 'same')
-    #         ori = np.histogram(ori.flatten(), bins)[0]
-                    
+            # SUPER COOL! View the Edges!
+#             plt.figure()
+#             plt.imshow((mag), cmap='gray')   
+#             plt.figure()
+#             plt.imshow(np.absolute(ori), cmap='gray')   
+#             plt.show()
             
-            if np.linalg.norm(mag) != 0:
-                mag = (mag-np.mean(mag))/np.linalg.norm(mag)
+            ori_4_hist = []
+            ori_7_hist = []
             
-            ori = (ori-np.mean(ori))/np.linalg.norm(ori)
+            for i in np.linspace(0, 28, num=15):
+                for j in np.linspace(0, 28, num=15):
+                    if(i%2 == 0 and j%2 == 0 and i<=28-4 and j<=28-4):
+                        ori_4 = ori[i:i+4, j:j+4].flatten()
+#                         print np.shape(ori_4), i, j
+                        ori_4_hist.append(np.histogram(ori_4, 10, (-np.pi, np.pi))[0])
+
+            for i in np.linspace(0, 28, num=8):
+                for j in np.linspace(0, 28, num=8):
+                    if(i%4 == 0 and j%4 == 0 and i<=28-7 and j<=28-7):
+                        ori_7 = ori[i:i+7, j:j+7].flatten()
+#                         print np.shape(ori_7), i, j
+                        ori_7_hist.append(np.histogram(ori_7, 10, (-np.pi, np.pi))[0])
+                        
             
-            shuffledData.append(np.append(mag.flatten(), ori.flatten()))
+            ori_4_hist = np.float64(ori_4_hist)/(np.linalg.norm(ori_4_hist))
+            ori_7_hist = np.float64(ori_7_hist)/(np.linalg.norm(ori_7_hist))
+            
+            
+#             print ori_4_hist, ori_7_hist
+            
+#             plt.figure()
+#             plt.hist(ori_4_hist)
+#             plt.show()
+            
+            shuffledData.append(np.append(ori_4_hist, ori_7_hist))
             shuffledLabels.append((elem[1][0]))
         
-    else:
+    elif MALIK == 1:        # extra features of smoothed image
+        for elem in imageComplete:
+            cell_size = 4
+            cell = (1.0/cell_size**2)*np.ones((cell_size,cell_size))
+            smooth_4 = signal.fftconvolve(elem[0], cell, 'valid')
+            smooth_4 = smooth_4.flatten()[::cell_size/2]                      #pick every second element
+            cell_size = 7
+            cell = (1.0/cell_size**2)*np.ones((cell_size,cell_size))
+            smooth_7 = signal.fftconvolve(elem[0], cell, 'valid')
+            smooth_7 = smooth_7.flatten()[::cell_size/2]                      #pick every second element
+            smooth_all = np.append(smooth_4, smooth_7)
+            shuffledData.append(np.append(elem[0], smooth_all))
+            shuffledLabels.append((elem[1][0]))
+    else:           # raw pixels
         for elem in imageComplete:
             shuffledData.append((elem[0]).flatten())                # Use a simple array of pixels as the feature
             shuffledLabels.append((elem[1][0]))
         
     # NOTE: Set aside 50,000-60,000 to validate
-    
-    # Plot the distribution of digits in Validation Data
-    plt.figure()
-    plt.title('Histogram for Validation Data')
-    plt.ylabel('Count')
-    plt.xlabel('Digit Label')
-    plt.hist(shuffledLabels[50000:])
-    plt.savefig("./Results/ValidationData_Hist_MALIK" + str(MALIK) + ".png")
 
     ############# TRAIN SVM ############# 
     print 50*'='
@@ -163,12 +176,8 @@ for MALIK in [True, False]:
     
     errorRate_array = []
     C = np.linspace(1,3,16)                   # array of values for parameter C
-    training_Size = [100, 200, 500, 1000, 2000, 5000, 10000, 15000]
-    for elem in training_Size:
-        if DEBUG:
-            print 50*'-'
-            print "Shuffled Data and Label shape: ", len(shuffledData), len(shuffledLabels)
-        
+    training_Size = [100, 200, 500, 1000, 2000, 5000, 10000]
+    for elem in training_Size:                
         clf = svm.SVC(kernel='linear', C=1.4)
         clf.fit(shuffledData[:elem], np.array(shuffledLabels[:elem]))
         
@@ -195,7 +204,7 @@ for MALIK in [True, False]:
     for xy in zip(training_Size, errorRate_array):                                                # <--
         ax.annotate('%s' % int(xy[1]) + "%", xy=xy, fontsize = 'small') # <--
     plt.grid()
-    plt.savefig("./Results/ErrorRate_TrainingSize_Raw_" + str(MALIK) + ".png")
+    plt.savefig("./Results/ErrorRate_TrainingSize_" + str(MALIK) + ".png")
 
 ####################################### 
 
