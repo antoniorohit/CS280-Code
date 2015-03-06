@@ -202,8 +202,8 @@ for MALIK in [True, False]:
     linear_errorRate_array = []
     linear_errorRate_array_on_training = []
     C = np.linspace(1,3,16)                   # array of values for parameter C
-    training_Size = [10,20,30] #[100, 200, 500, 1000, 2000, 5000, 10000]
-    test_size = 10 #10000
+    training_Size = [100, 200, 500, 1000, 2000, 5000, 10000]
+    test_size = 10000
     for elem in training_Size:
         if DEBUG:
             print 50*'-'
