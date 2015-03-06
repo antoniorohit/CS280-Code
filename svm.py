@@ -93,7 +93,7 @@ imageData = np.array(trainMatrix['train_images'])
 imageData = np.rollaxis(imageData, 2, 0)                # move the index axis to be the first 
 imageLabels = np.array(trainMatrix['train_labels'])
 
-for MALIK in [True, False]:
+for MALIK in [True]: #, False]:
     print MALIK
     ############# 
     # Ink Normalization
@@ -171,8 +171,8 @@ for MALIK in [True, False]:
                     ori_4_hist.append(np.histogram(elem2.flatten(), n_bins, (-np.pi, np.pi))[0])
                             
                 
-                ori_4_hist = np.float64(ori_4_hist)/(np.linalg.norm(ori_4_hist))
-                ori_7_hist = np.float64(ori_7_hist)/(np.linalg.norm(ori_7_hist))
+#                 ori_4_hist = np.float64(ori_4_hist)/(np.linalg.norm(ori_4_hist))
+#                 ori_7_hist = np.float64(ori_7_hist)/(np.linalg.norm(ori_7_hist))
                 
                 shuffledData.append(np.append(ori_4_hist, ori_7_hist))
                 shuffledLabels.append((elem[1][0]))
@@ -202,9 +202,11 @@ for MALIK in [True, False]:
     linear_errorRate_array = []
     linear_errorRate_array_on_training = []
     C = np.linspace(1,3,16)                   # array of values for parameter C
-    training_Size = [100, 200, 500, 1000, 2000, 5000, 10000]
+    training_Size = [100, 200, 500, 1000] #, 2000, 5000, 10000]
     test_size = 10000
     for elem in training_Size:
+        ind=0
+        error_indices = list()
         if DEBUG:
             print 50*'-'
             print "Shuffled Data and Label shape: ", len(shuffledData), len(shuffledLabels)
@@ -230,8 +232,11 @@ for MALIK in [True, False]:
 
         accuracy = 0.0
         for elem1, elem2 in zip(predicted_Digits, actual_Digits):
+            ind+=1
             if elem1 == elem2:
                 accuracy+=1
+            else:
+                error_indices.append(ind)
         
         errorRate_array.append(100-100.0*accuracy/len(predicted_Digits))
         print "Training Size:", elem 
@@ -270,8 +275,10 @@ for MALIK in [True, False]:
         print "Error Rate for linear model on training set : ", linear_errorRate_array_on_training[-1], "%"
         print 50*'-'
         
-    
-    print(np.shape(training_Size), np.shape(errorRate_array))
+    for error in error_indices:
+        plt.imshow(imageComplete[error][0])
+        plt.show()
+        
     # Plot error rate vs training size
     fig = plt.figure()
     ax = fig.add_subplot(111)
@@ -286,8 +293,8 @@ for MALIK in [True, False]:
     for xy in zip(training_Size, errorRate_array):                                                # <--
         ax.annotate('%s' % int(xy[1]) + "%", xy=xy, fontsize = 'small') # <--
     plt.grid()
-    plt.savefig("./Results/ErrorRate_TrainingSize_Raw_" + str(MALIK) + ".png")
-    plt.show()
+    plt.savefig("./Results/ErrorRate_NoNormalization" + ".png")
+    plt.close()
 
 ####################################### 
 
