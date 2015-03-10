@@ -216,12 +216,10 @@ def train_svm(shuffledData, shuffledLabels, visualization, imageComplete):
         
         X_train = shuffledData[:elem]
         y_train = shuffledLabels[:elem]
-        print X_train, elem
         svc = svm.SVC(C=29.2, kernel='precomputed')
         mat_train = np.zeros((elem,elem))
         for i in range(elem):
             for j in range(elem):
-                print i, j
                 mat_train[i][j]= my_kernel(X_train[i], X_train[j], 0)
         svc.fit(mat_train, y_train)
                 
