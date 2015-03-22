@@ -50,7 +50,7 @@ end
 % F        : the 3x3 fundamental matrix,
 % res_err  : mean squared distance between points in the two images and their
 % their corresponding epipolar lines
-[F res_err] = fundamental_matrix(); % <------------------------------------- You write this one!
+[F res_err] = fundamental_matrix(matches); % <------------------------------------- You write this one!
 
 fprintf('Residual in F = %f',res_err);
 
