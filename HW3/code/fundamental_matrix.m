@@ -17,7 +17,7 @@ function [F, res] = fundamental_matrix(matches)
 % Augment the points with a ones column (constant Z for all points on image
 % plane) This column actually helps with creating T1 and T2 (nifty trick
 % :))
-[N, d] = size(matches)
+[N, d] = size(matches);
 one_col = ones(N,1);
 points1 = [matches(:,[1,2]) one_col]';
 points2 = [matches(:,[3,4]) one_col]';
@@ -100,10 +100,10 @@ X2 = points2;
 X1 = points1;
 
 ELine = X2'*F;
-res = sum((sum(ELine.*X1',2)./sqrt(sum(ELine(:,1:2).^2,2))).^2)./size(ELine,1)
+res = sum((sum(ELine.*X1',2)./sqrt(sum(ELine(:,1:2).^2,2))).^2)./size(ELine,1);
 
 ELine2=X1'*F';
-res2 = sum((sum(ELine2.*X1',2)./sqrt(sum(ELine2(:,1:2).^2,2))).^2)./size(ELine2,1)
+res2 = sum((sum(ELine2.*X1',2)./sqrt(sum(ELine2(:,1:2).^2,2))).^2)./size(ELine2,1);
 
 end
 

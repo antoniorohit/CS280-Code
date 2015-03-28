@@ -12,15 +12,14 @@ W = [0 -1  0;
      1  0  0;
      0  0  1];
 
-% One way
+t = cell(2,1); 
+t{1} = +U(:,end);
+t{2} = -U(:,end);
  
- R = U*W*V';
+R = cell(2,1);
+R{1} = U*W*V';
+R{2} = U*W'*V';
 
-% Alternative?
-R2 = U*W'*V'
-
-
-t = E*R^-1;
 
 end
 
