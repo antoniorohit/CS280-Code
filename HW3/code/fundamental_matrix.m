@@ -7,10 +7,13 @@ function [F, res] = fundamental_matrix(matches)
 %
 % OUTPUT: F, res
 % Fundamental Matrix (F) and residual error (res)
+% see: https://github.com/jasonzliang/cs280/blob/master/hw2/code/fundamental_matrix.m
 
 %% STEP 0
 % Calculate the points X1 and X2 (points1 and points2)
-% Subtract mean and scale by sigma
+% Augment the points with a ones column (constant Z for all points on image
+% plane) This column actually helps with creating T1 and T2 (nifty trick
+% :))
 [N, d] = size(matches)
 one_col = ones(N,1);
 points1 = [matches(:,[1,2]) one_col]';
@@ -19,7 +22,6 @@ points2 = [matches(:,[3,4]) one_col]';
 %% STEP 1
 % NORMALIZATION
 % Subtract mean and scale by sigma
-
 mean_matches = mean(matches);
 sigma_matches = std(matches);
 
@@ -34,9 +36,6 @@ T2 = [T2; 0 0 1];
 
 pts1 = (T1*points1)';
 pts2 = (T2*points2)';
-
-size(pts1)
-
 
 %% STEP 2 
 % OPTIMIZATION
@@ -61,10 +60,6 @@ end
 % S containing the singular values
 [U, S, V] = svd(A);
 
-% size(U)
-% size(S)
-% size(V)
-
 % See equation75 here:
 % http://db.cs.duke.edu/courses/cps111/spring07/notes/12.pdf
 % get column 9 corresponding to eigen value 9 (smallest)
@@ -86,6 +81,9 @@ F = U*S*V';
 % DENORMALIZATION
 F = T2'*F*T1;
 
+%% STEP 4
+% RESIDUAL ERROR
+
 % lines1 = (F'*points2)';
 % lines2 = (F*points1)';
 % 
@@ -94,17 +92,15 @@ F = T2'*F*T1;
 %     d = abs(cross(Q2-Q1,P-Q1))/abs(Q2-Q1);
 % end
 
+% Actual points, not scaled points
 X2 = points2;
 X1 = points1;
- % residual, calculation
+
 ELine = X2'*F;
 res = sum((sum(ELine.*X1',2)./sqrt(sum(ELine(:,1:2).^2,2))).^2)./size(ELine,1)
 
 ELine2=X1'*F';
 res2 = sum((sum(ELine2.*X1',2)./sqrt(sum(ELine2(:,1:2).^2,2))).^2)./size(ELine2,1)
-
-
-
 
 end
 
