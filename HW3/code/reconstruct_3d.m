@@ -61,7 +61,7 @@ E = K2'*F*K1; % the essential matrix
 
 % R : cell array with the possible rotation matrices of second camera
 % t : cell array of the possible translation vectors of second camera
-[R t] = find_rotation_translation();% <------------------------------------- You write this one!
+[R t] = find_rotation_translation(E);% <------------------------------------- You write this one!
 
 
 % Find R2 and t2 from R,t such that largest number of points lie in front

@@ -7,7 +7,10 @@ function [F, res] = fundamental_matrix(matches)
 %
 % OUTPUT: F, res
 % Fundamental Matrix (F) and residual error (res)
-% see: https://github.com/jasonzliang/cs280/blob/master/hw2/code/fundamental_matrix.m
+%
+% Ref: 
+% https://github.com/jasonzliang/cs280/blob/master/hw2/code/fundamental_matrix.m
+% http://www.robots.ox.ac.uk/~vgg/hzbook/hzbook2/HZepipolar.pdf
 
 %% STEP 0
 % Calculate the points X1 and X2 (points1 and points2)
