@@ -107,7 +107,7 @@ points = find_3d_points(P1, P2, matches); % <-----------------------------------
 %% -------- plot points and centers of cameras ----------------------------
 
 
-plot_3d(points); % <-------------------------------------------------------------- You write this one!
+plot_3d(points, P1, P2); % <-------------------------------------------------------------- You write this one!
 
 
 

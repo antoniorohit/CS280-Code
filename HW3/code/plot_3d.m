@@ -1,4 +1,4 @@
-function [  ] = plot_3d( points )
+function [  ] = plot_3d(points, P1, P2)
 %PLOT_3D Summary of this function goes here
 %   Detailed explanation goes here
 
@@ -9,6 +9,10 @@ Z1 = points(:,3);
 figure();
 % use plot3 command
 plot3(X1, Y1, Z1, 'R.');
+hold on;
+
+plot3(P1(1,4), P1(2,4), P1(3,4), 'Bo');
+plot3(P2(1,4), P2(2,4), P2(3,4), 'Bo');
 
 end
 

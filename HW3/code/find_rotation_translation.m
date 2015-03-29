@@ -1,4 +1,4 @@
-function [R t] = find_rotation_translation(E)
+function [R, t] = find_rotation_translation(E)
 %FIND_ROTATION_TRANSLATION Summary of this function goes here
 %   Detailed explanation goes here
 
