@@ -102,12 +102,12 @@ t2 = t{ti(j)}; R2 = R{ri(j)};
 P2 = K2*[R2 t2];
 
 % compute the 3D points with the final P2
-points = find_3d_points(); % <---------------------------------------------- You have already written this one!
+points = find_3d_points(P2); % <---------------------------------------------- You have already written this one!
 
 %% -------- plot points and centers of cameras ----------------------------
 
 
-plot_3d(); % <-------------------------------------------------------------- You write this one!
+plot_3d(points); % <-------------------------------------------------------------- You write this one!
 
 
 
