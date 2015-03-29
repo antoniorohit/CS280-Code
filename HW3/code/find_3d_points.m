@@ -44,6 +44,8 @@ for i = 1:N
 end
 
 %% Reconstruction error
+% Note: we are doing RMS error
+
 % x1=P1*X, x2=P2*X
 X1 = (P1*[points ones(N, 1)]')';
 X2 = (P2*[points ones(N, 1)]')';
@@ -55,10 +57,11 @@ for i=1:N
 end
 
 % The outer sum is over x and y, then inner sum is over all the N elements
-% Divided by 2*N because error is calculated for each image
-% sqrt(sum(sum((X3D-X2D)^2 + (Y3D-Y2D)^2)))/N   <- for each image, then
+% sqrt(sum(sum((X3D-X2D)^2 + (Y3D-Y2D)^2)))/N)   <- for each image, then
 % take average
-rec_err = (sqrt(sum(sum((X1(:,[1,2])-matches(:,[1,2])).^2))) + ...
-           sqrt(sum(sum((X2(:,[1,2])-matches(:,[3,4])).^2))))/(2*N);
+rec_err1 = sqrt(sum(sum((X1(:,[1,2])-matches(:,[1,2])).^2))/N);
+rec_err2 = sqrt(sum(sum((X2(:,[1,2])-matches(:,[3,4])).^2))/N);
+
+rec_err = (rec_err1 + rec_err2)/2;
 end
 

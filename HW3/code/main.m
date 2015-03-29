@@ -1,7 +1,7 @@
 clear();
 close();
 
-fprintf('HOUSE\n');
+fprintf('\nHOUSE\n');
 a = reconstruct_3d('house');
-fprintf('LIBRARY\n');
+fprintf('\nLIBRARY\n');
 b = reconstruct_3d('library');

@@ -22,8 +22,7 @@ one_col = ones(N,1);
 points1 = [matches(:,[1,2]) one_col]';
 points2 = [matches(:,[3,4]) one_col]';
 
-%% STEP 1
-% NORMALIZATION
+%% STEP 1 NORMALIZATION
 % Subtract mean and scale by sigma
 mean_matches = mean(matches);
 sigma_matches = std(matches);
@@ -40,8 +39,7 @@ T2 = [T2; 0 0 1];
 pts1 = (T1*points1)';
 pts2 = (T2*points2)';
 
-%% STEP 2 
-% OPTIMIZATION
+%% STEP 2 OPTIMIZATION
 A = ones(N, 9);
 
 % Define A
@@ -69,9 +67,9 @@ end
 v9 = V(:,9);
 
 % f is the column vector of elems of F stacked
-F_star = [v9(1), v9(2), v9(3);
-     v9(4), v9(5), v9(6);
-     v9(7), v9(8), v9(9)];
+F_star = [  v9(1), v9(2), v9(3);
+            v9(4), v9(5), v9(6);
+            v9(7), v9(8), v9(9)];
     
 [U, S, V] = svd(F_star);
 
@@ -80,31 +78,32 @@ S(9) = 0;
 
 F = U*S*V';
 
-%% STEP 3
-% DENORMALIZATION
+%% STEP 3 DENORMALIZATION
 F = T2'*F*T1;
 
-%% STEP 4
-% RESIDUAL ERROR
-
-% lines1 = (F'*points2)';
-% lines2 = (F*points1)';
-% 
-% for i = 1:N
-%     point1 = matches(i,[1,2]);
-%     d = abs(cross(Q2-Q1,P-Q1))/abs(Q2-Q1);
-% end
+%% STEP 4 RESIDUAL ERROR
+% See (f) here: 
+% http://homepages.inf.ed.ac.uk/rbf/CVonline/LOCAL_COPIES/BEARDSLEY/node2.html
+% for how to calculate perpendicular distance of point from line in 
+% homogenous coordinates
+% Note: we are doing RMS error
 
 % Actual points, not scaled points
-X2 = points2;
-X1 = points1;
+X2 = points2';
+X1 = points1';
 
-ELine1 = X2'*F;      % epipolar line
-res = sum((sum(ELine1.*X1',2)./sqrt(sum(ELine1(:,1:2).^2,2))).^2)./N;
 
-% other residual
-ELine2= X1'*F';     % other epipolar line
-res2 = sum((sum(ELine2.*X2',2)./sqrt(sum(ELine2(:,1:2).^2,2))).^2)./N
+% first residual
+eLine1 = X2*F;      % first epipolar line (not yet normalized)
+%            dot product                    sqrt(a^2+b^2)
+res1 = sqrt(sum((sum(eLine1.*X1,2)./sqrt(sum(eLine1(:,1:2).^2,2))).^2)/N);
+
+% second residual
+eLine2= X1*F';     % second epipolar line (not yet normalized)
+%            dot product                    sqrt(a^2+b^2)
+res2 = sqrt(sum((sum(eLine2.*X2,2)./sqrt(sum(eLine2(:,1:2).^2,2))).^2)/N);
+
+res = (res1+res2)/2;
 
 end
 
