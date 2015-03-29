@@ -99,11 +99,12 @@ F = T2'*F*T1;
 X2 = points2;
 X1 = points1;
 
-ELine = X2'*F;
-res = sum((sum(ELine.*X1',2)./sqrt(sum(ELine(:,1:2).^2,2))).^2)./size(ELine,1);
+ELine1 = X2'*F;      % epipolar line
+res = sum((sum(ELine1.*X1',2)./sqrt(sum(ELine1(:,1:2).^2,2))).^2)./N;
 
-ELine2=X1'*F';
-res2 = sum((sum(ELine2.*X1',2)./sqrt(sum(ELine2(:,1:2).^2,2))).^2)./size(ELine2,1);
+% other residual
+ELine2= X1'*F';     % other epipolar line
+res2 = sum((sum(ELine2.*X2',2)./sqrt(sum(ELine2(:,1:2).^2,2))).^2)./N
 
 end
 

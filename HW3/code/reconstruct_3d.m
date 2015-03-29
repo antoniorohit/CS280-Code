@@ -50,7 +50,7 @@ end
 % F        : the 3x3 fundamental matrix,
 % res_err  : mean squared distance between points in the two images and their
 % their corresponding epipolar lines
-[F res_err] = fundamental_matrix(matches); % <------------------------------------- You write this one!
+[F, res_err] = fundamental_matrix(matches); % <------------------------------------- You write this one!
 
 fprintf('Residual in F = %f\n',res_err);
 
@@ -61,7 +61,7 @@ E = K2'*F*K1; % the essential matrix
 
 % R : cell array with the possible rotation matrices of second camera
 % t : cell array of the possible translation vectors of second camera
-[R t] = find_rotation_translation(E);% <------------------------------------- You write this one!
+[R, t] = find_rotation_translation(E);% <------------------------------------- You write this one!
 
 
 % Find R2 and t2 from R,t such that largest number of points lie in front
@@ -82,7 +82,7 @@ for ti = 1:length(t)
         
         P2 = K2*[R2 t2];
         
-        [points_3d errs(ti,ri)] = find_3d_points(P1, P2, matches); %<---------------------- You write this one!
+        [points_3d, errs(ti,ri)] = find_3d_points(P1, P2, matches); %<---------------------- You write this one!
         
         Z1 = points_3d(:,3);
         Z2 = R2(3,:)*points_3d'+t2(3);Z2 = Z2';
@@ -92,7 +92,7 @@ for ti = 1:length(t)
     end
 end
 
-[ti ri] = find(num_points == max(max(num_points)));
+[ti, ri] = find(num_points == max(max(num_points)));
 
 j = 1; % pick one out the best combinations
 
