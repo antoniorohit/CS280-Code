@@ -14,8 +14,8 @@ function [F, res] = fundamental_matrix(matches)
 
 %% STEP 0
 % Calculate the points X1 and X2 (points1 and points2)
-% Augment the points with a ones column (constant Z for all points on image
-% plane) This column actually helps with creating T1 and T2 (nifty trick
+% Augment the points with a ones column (homogeneous coordinates?) 
+% This column actually helps with creating T1 and T2 (nifty trick
 % :))
 [N, d] = size(matches);
 one_col = ones(N,1);
