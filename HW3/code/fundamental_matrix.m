@@ -27,8 +27,8 @@ points2 = [matches(:,[3,4]) one_col]';
 mean_matches = mean(matches);
 sigma_matches = std(matches);
 
-scaling1 = sqrt(2/sigma_matches(1)^2+sigma_matches(2)^2);
-scaling2 = sqrt(2/sigma_matches(3)^2+sigma_matches(4)^2);
+scaling1 = sqrt(2/(sigma_matches(1)^2+sigma_matches(2)^2));
+scaling2 = sqrt(2/(sigma_matches(3)^2+sigma_matches(4)^2));
 
 T1 = scaling1.*[eye(2) -mean_matches(1:2)'];
 T1 = [T1; 0 0 1];
@@ -36,6 +36,7 @@ T1 = [T1; 0 0 1];
 T2 = scaling2.*[eye(2) -mean_matches(3:4)'];
 T2 = [T2; 0 0 1];
 
+% Homogenous normalized coordinates
 pts1 = (T1*points1)';
 pts2 = (T2*points2)';
 
@@ -96,14 +97,7 @@ X1 = points1';
 % first residual
 eLine1 = X2*F;      % first epipolar line (not yet normalized)
 %            dot product                    sqrt(a^2+b^2)
-res1 = sqrt(sum((sum(eLine1.*X1,2)./sqrt(sum(eLine1(:,1:2).^2,2))).^2)/N);
-
-% second residual
-eLine2= X1*F';     % second epipolar line (not yet normalized)
-%            dot product                    sqrt(a^2+b^2)
-res2 = sqrt(sum((sum(eLine2.*X2,2)./sqrt(sum(eLine2(:,1:2).^2,2))).^2)/N);
-
-res = (res1+res2)/2;
+res = sqrt(sum((sum(eLine1.*X1,2)).^2)/N);
 
 end
 

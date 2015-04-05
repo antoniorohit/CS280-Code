@@ -29,8 +29,12 @@ detR2 = (det(R{2}));
 
 if (abs(detR1-1) > 0.001) || (abs(detR2-1) > 0.001)
     fprintf('Error: Determinant of the rotation matrix is R1=%f, R2=%f\n', detR1, detR2);
-    % What to do
+    % What to do :(
 end
 
+t{1}
+t{2}
+R{1}
+R{2}
 end
 

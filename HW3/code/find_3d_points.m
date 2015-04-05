@@ -30,7 +30,7 @@ for i = 1:N
           (x2*P2(3,4)-P2(1,4));
           (y2*P2(3,4)-P2(2,4));
         ];
-
+    
     % Least squares SVD (W=1)
     [U, S, V] = svd(A);
 
@@ -62,6 +62,7 @@ end
 rec_err1 = sqrt(sum(sum((X1(:,[1,2])-matches(:,[1,2])).^2))/N);
 rec_err2 = sqrt(sum(sum((X2(:,[1,2])-matches(:,[3,4])).^2))/N);
 
-rec_err = (rec_err1 + rec_err2)/2;
+rec_err = sqrt((rec_err1^2 + rec_err2^2)/2);
+
 end
 
